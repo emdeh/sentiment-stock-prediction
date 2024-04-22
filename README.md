@@ -81,9 +81,9 @@ Dashboard: Use Plotly Dash to create interactive dashboards to display real-time
     - Dashboard via Plotly Dash to create interactive dashbboards to display real-time analysis and predictions
 
 ## Done
-News fetching via fetch_news.py
-Sentiment analysis of news via analyse_sentiment.py
-News saving via mongo_utils.py
+- News fetching via fetch_news.py
+- Sentiment analysis of news via analyse_sentiment.py
+- News saving via mongo_utils.py
 
 # SETUP
 
