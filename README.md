@@ -33,13 +33,13 @@ Dashboard: Use Plotly Dash to create interactive dashboards to display real-time
 
 
 ## Tools and Libraries I might need
-Python: For all scripting and model development.
-Pandas & NumPy: For data manipulation.
-NLTK/spaCy: For natural language processing.
-Scikit-Learn, Keras, or TensorFlow: For building and training predictive models.
-Matplotlib/Seaborn/Plotly: For data visualization.
-Flask/Django: For deploying a web application.
-SQL/NoSQL: For data storage if needed.
+- Python: For all scripting and model development.
+- Pandas & NumPy: For data manipulation.
+- NLTK/spaCy: For natural language processing.
+- Scikit-Learn, Keras, or TensorFlow: For building and training predictive models.
+- Matplotlib/Seaborn/Plotly: For data visualization.
+- Flask/Django: For deploying a web application.
+- SQL/NoSQL: For data storage if needed.
 
 # BACKLOG
 
