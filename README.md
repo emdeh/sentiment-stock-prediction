@@ -102,9 +102,21 @@ Uses a `venv` to manage dependencies
 
 ## Mongo DB
 - Start docker
-- Pull the mongo DB image from Docker Hub: `docker pull mongo`
-- Run the MongoDB container
+
+- Pull the mongo DB image from Docker Hub (unless it has a `stop unless restart` policy, then the container will start as soon as Docker is launched)
+
+    ```
+    docker pull mongo # run from /data/mongo_data)
+    ```
+     
+- Run the MongoDB container (only if it won't start automatically with docker)
 
     ```
     docker run --name mongodb -v ~/repos/sentiment-stock-prediction/data/mongo_data:/data/db -p 27017:27017 -d --restart unless-stopped mongo
+    ```
+
+- Verify the data volume is mounted in the container 
+
+    ```
+    docker inspect -f '{{ .Mounts }}' <container-ID>
     ```
