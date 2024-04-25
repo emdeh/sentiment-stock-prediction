@@ -8,5 +8,5 @@ def analyse_sentiment(text):
     It is called in the `save_data_to_db` function in `mongo_utils.py`.
     It is called if the `perform_sentiment_analysis` flag is set to `True`.
     """
-    sid = SentimentIntensityAnalyzer()
-    return sid.polarity_scores(text)['compound']
+    sia = SentimentIntensityAnalyzer()
+    return sia.polarity_scores(text)['compound']
