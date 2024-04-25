@@ -3,6 +3,7 @@ from pymongo import MongoClient
 from contextlib import contextmanager
 from analyse_sentiment import analyse_sentiment
 
+### GENERAL FUNCTIONS ###
 @contextmanager
 def get_mongo_client(mongo_uri):
     """
@@ -16,7 +17,21 @@ def get_mongo_client(mongo_uri):
     finally:
         client.close()
 
-def save_data_to_db(data, mongo_uri, db_name, collection_name, perform_sentiment_analysis=False):
+def clear_collection(db_name, collection_name, mongo_uri):
+    """
+    Clears all articles from a collection in MongoDB.
+    Uses the context manager `get_mongo_client` to handle the client connection.
+    """
+    with get_mongo_client(mongo_uri) as client:
+        db = client[db_name]
+        collection = db[collection_name]
+
+        collection.delete_many({})  # This deletes all documents in the collection
+        print(f"Cleared all articles from {db_name}:{collection_name}")
+
+### FUNCTIONS FOR SAVING AND GETTING NEWS DATA ###
+
+def save_news_data_to_db(data, mongo_uri, db_name, collection_name, perform_sentiment_analysis=False):
     """
     Saves data to MongoDB.
     Uses the context manager `get_mongo_client` to handle the client connection.
@@ -68,19 +83,7 @@ def get_news_from_db(db_name, collection_name, mongo_uri):
                 print(f"No sentiment score available for article {article['url']}")
         return news_articles
 
-def clear_collection(db_name, collection_name, mongo_uri):
-    """
-    Clears all articles from a collection in MongoDB.
-    Uses the context manager `get_mongo_client` to handle the client connection.
-    """
-    with get_mongo_client(mongo_uri) as client:
-        db = client[db_name]
-        collection = db[collection_name]
-
-        collection.delete_many({})  # This deletes all documents in the collection
-        print(f"Cleared all articles from {db_name}:{collection_name}")
-
-def delete_article_by_url(url, db_name, collection_name, mongo_uri):
+def delete_news_item_by_url(url, db_name, collection_name, mongo_uri):
     """
     Deletes an article from a collection in MongoDB based on the URL.
     Uses the context manager `get_mongo_client` to handle the client connection.
@@ -94,3 +97,64 @@ def delete_article_by_url(url, db_name, collection_name, mongo_uri):
             print(f"Deleted article with URL {url}")
         else:
             print(f"No article found with URL {url} to delete")
+
+### FUNCTIONS FOR SAVING AND GETTING STOCK DATA ###
+
+def save_stock_data_to_db(data, mongo_uri, db_name, collection_name):
+    """
+    Saves stock data to MongoDB.
+    Uses the context manager `get_mongo_client` to handle the client connection.
+    Handles both new data insertion and updating existing records.
+    """
+    with get_mongo_client(mongo_uri) as client:
+        db = client[db_name]
+        collection = db[collection_name]
+        for date, details in data.items():
+            document = {
+                'open': details['1. open'],
+                'high': details['2. high'],
+                'low': details['3. low'],
+                'close': details['4. close'],
+                'volume': details['5. volume']
+            }
+            try:
+                result = collection.update_one(
+                    {'date': date},
+                    {'$set': document, '$setOnInsert': {'date': date}},
+                    upsert=True
+                )
+                if result.upserted_id:
+                    print(f"Inserted new stock data for date {date}")
+                elif result.modified_count > 0:
+                    print(f"Updated existing stock data for date {date}")
+                else:
+                    print(f"No changes made to stock data for date {date}")
+            except Exception as e:
+                print(f"Failed to insert/update stock data for date {date}: {e}")
+
+
+def get_stocks_from_db(db_name, collection_name, mongo_uri):
+    """
+    Gets stock data from MongoDB.
+    Uses the context manager `get_mongo_client` to handle the client connection.
+    """
+    with get_mongo_client(mongo_uri) as client:
+        db = client[db_name]
+        collection = db[collection_name]
+        stock_data = list(collection.find({}))
+        print(f"Retrieved {len(stock_data)} stock data entries.")
+        return stock_data
+    
+def delete_stock_data_by_date(date, db_name, collection_name, mongo_uri):
+    """
+    Deletes stock data from a collection in MongoDB based on the date.
+    Uses the context manager `get_mongo_client` to handle the client connection.
+    """
+    with get_mongo_client(mongo_uri) as client:
+        db = client[db_name]
+        collection = db[collection_name]
+        result = collection.delete_one({"date": date})
+        if result.deleted_count > 0:
+            print(f"Deleted stock data with date {date}")
+        else:
+            print(f"No stock data found with date {date} to delete")

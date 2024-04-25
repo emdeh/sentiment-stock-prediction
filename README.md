@@ -47,8 +47,6 @@ Dashboard: Use Plotly Dash to create interactive dashboards to display real-time
 - Start visualise_data.py with a function to plot sentiment over time
 
 ## Next up
-- Document docker and mongodb setup
-- Collectin and integration of stock prices
 - Narrow news article fetching and stock price fetchig (e.g., tech articles and tech stocks)
 
 ## To do
@@ -84,6 +82,8 @@ Dashboard: Use Plotly Dash to create interactive dashboards to display real-time
 - News fetching via fetch_news.py
 - Sentiment analysis of news via analyse_sentiment.py
 - News saving via mongo_utils.py
+- Documented docker and mongodb setup
+- Collecting stock prices
 
 # SETUP
 
@@ -106,7 +106,7 @@ Uses a `venv` to manage dependencies
 - Pull the mongo DB image from Docker Hub (unless it has a `stop unless restart` policy, then the container will start as soon as Docker is launched)
 
     ```
-    docker pull mongo # run from /data/mongo_data)
+    docker pull mongo # run from (/data/mongo_data)
     ```
      
 - Run the MongoDB container (only if it won't start automatically with docker)
@@ -120,3 +120,9 @@ Uses a `venv` to manage dependencies
     ```
     docker inspect -f '{{ .Mounts }}' <container-ID>
     ```
+
+### Accessing the DB
+
+```
+docker exec -it <container-name> mongosh
+```
